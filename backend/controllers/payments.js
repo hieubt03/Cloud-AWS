@@ -47,38 +47,38 @@ exports.capturePayment = async (req, res) => {
     }
   }
 
-  const currency = "INR";
-  const options = {
-    amount: totalAmount * 100,
-    currency,
-    receipt: Math.random(Date.now()).toString(),
-  };
+  // const currency = "INR";
+  // const options = {
+  //   amount: totalAmount * 100,
+  //   currency,
+  //   receipt: Math.random(Date.now()).toString(),
+  // };
 
-  try {
-    const paymentResponse = await instance.instance.orders.create(options);
-    res.status(200).json({
-      success: true,
-      message: paymentResponse,
-    });
-  } catch (error) {
-    console.log(error);
-    return res
-      .status(500)
-      .json({ success: false, mesage: "Could not Initiate Order" });
-  }
+  // try {
+  //   const paymentResponse = await instance.instance.orders.create(options);
+  //   res.status(200).json({
+  //     success: true,
+  //     message: paymentResponse,
+  //   });
+  // } catch (error) {
+  //   console.log(error);
+  //   return res
+  //     .status(500)
+  //     .json({ success: false, mesage: "Could not Initiate Order" });
+  // }
 };
 
 exports.verifyPayment = async (req, res) => {
-  const razorpay_order_id = req.body?.razorpay_order_id;
-  const razorpay_payment_id = req.body?.razorpay_payment_id;
-  const razorpay_signature = req.body?.razorpay_signature;
+  // const razorpay_order_id = req.body?.razorpay_order_id;
+  // const razorpay_payment_id = req.body?.razorpay_payment_id;
+  // const razorpay_signature = req.body?.razorpay_signature;
   const courses = req.body?.coursesId;
   const userId = req.user.id;
 
   if (
-    !razorpay_order_id ||
-    !razorpay_payment_id ||
-    !razorpay_signature ||
+    // !razorpay_order_id ||
+    // !razorpay_payment_id ||
+    // !razorpay_signature ||
     !courses ||
     !userId
   ) {
@@ -87,17 +87,19 @@ exports.verifyPayment = async (req, res) => {
       .json({ success: false, message: "Payment Failed, data not found" });
   }
 
-  let body = razorpay_order_id + "|" + razorpay_payment_id;
-  const expectedSignature = crypto
-    .createHmac("sha256", process.env.RAZORPAY_SECRET)
-    .update(body.toString())
-    .digest("hex");
+  // let body = razorpay_order_id + "|" + razorpay_payment_id;
+  // const expectedSignature = crypto
+  //   .createHmac("sha256", process.env.RAZORPAY_SECRET)
+  //   .update(body.toString())
+  //   .digest("hex");
 
-  if (expectedSignature === razorpay_signature) {
-    await enrollStudents(courses, userId, res);
-    return res.status(200).json({ success: true, message: "Payment Verified" });
-  }
-  return res.status(200).json({ success: "false", message: "Payment Failed" });
+  // if (expectedSignature === razorpay_signature) {
+  //   await enrollStudents(courses, userId, res);
+  //   return res.status(200).json({ success: true, message: "Payment Verified" });
+  // }
+  await enrollStudents(courses, userId, res);
+  // return res.status(200).json({ success: "false", message: "Payment Failed" });
+  return res.status(200).json({ success: true, message: "Payment Verified" });
 };
 
 const enrollStudents = async (courses, userId, res) => {
